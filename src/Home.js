@@ -14,8 +14,8 @@ class Home extends Component {
 			search: '',
 			books: []
 		};
-		this.books = [];
 		this.handleFillChar = this.handleFillChar.bind(this);
+		this.handleKey = this.handleKey.bind(this);
 		this.filterSearch = this.filterSearch.bind(this);
 	}
 	componentDidMount() {
@@ -23,15 +23,16 @@ class Home extends Component {
 		fetch('/api/Books?filter={"include":["authors", "media"], "limit":20}')
 		.then(res => res.json())
 		.then(res => {
-			res.forEach(book => {
-				book.hidden = false;
+			return res.map(book => {
 				book.authors[0].slug = book.authors[0].slug
 										.toLowerCase()
 										.split('-')
 										.join(' ');
+				return book;
 			})
+		})
+		.then(res => {
 			this.setState({books:res});
-			this.books = res;
 		})
 		.catch(err => console.log(err))
 	}
@@ -43,6 +44,11 @@ class Home extends Component {
 			return false;
 		else
 			return true;
+	}
+	handleKey(e) {
+		if (e.key === 'Enter') {
+			e.target.blur();
+		}
 	}
   render() {
     return (

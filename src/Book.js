@@ -12,6 +12,16 @@ class Book extends Component {
 			book: {}
 		};
 	}
+	componentDidMount() {
+		var Promise = require("bluebird");
+		fetch('/api/Books?filter={"include":["authors", "media"], "limit":20}')
+		.then(res => res.json())
+		.then(res => {
+			console.log(res);
+			this.setState({book:res[this.props.params.id]});
+		})
+		.catch(err => console.log(err))
+	}
   render() {
     return (
 		<div>
@@ -31,6 +41,7 @@ class Book extends Component {
 				link="/"
 				message="Go back"
 			/>
+			<p>{this.state.book.summary}</p>
 			</div>
 			:
 			<p>waiting...</p>
