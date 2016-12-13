@@ -14,9 +14,9 @@ class Home extends Component {
 			search: '',
 			books: []
 		};
+		this.books = [];
 		this.handleFillChar = this.handleFillChar.bind(this);
-		this.handleKey = this.handleKey.bind(this);
-		this.handleSearch = this.handleSearch.bind(this);
+		this.filterSearch = this.filterSearch.bind(this);
 	}
 	componentDidMount() {
 		var Promise = require("bluebird");
@@ -31,26 +31,18 @@ class Home extends Component {
 										.join(' ');
 			})
 			this.setState({books:res});
+			this.books = res;
 		})
 		.catch(err => console.log(err))
 	}
 	handleFillChar(e) {
 		this.setState({search: e.target.value});
 	}
-	handleSearch() {
-		var books = this.state.books;
-		books.forEach(book => {
-			book.authors[0].slug.search(this.state.search) ?
-				book.hidden = true :
-				book.hidden = false;
-		})
-		this.setState({books:books});
-	}
-	handleKey(e) {
-		if (e.key === 'Enter') {
-			console.log(this.state.books);
-			this.handleSearch();
-		}
+	filterSearch(book) {
+		if (book.authors[0].slug.search(this.state.search) === -1)
+			return false;
+		else
+			return true;
 	}
   render() {
     return (
@@ -68,24 +60,24 @@ class Home extends Component {
 				/>
 				<GridList cellHeight={'auto'} cols={5}>
 					{this.state.books.length > 0 ?
-						this.state.books.map( (book, id) => ( 
-						<GridTile
-							key={id}
-							style={book.hidden ? {display:"none"} : {display:"true"}}
-							title={book.title + ' ' + book.authors[0].slug}
-							subtitle={
-								<Button
-									link={'/book/'+id}
-									message="View more"
-								/>
-							}>
-							<img
-								style={{width: '100%'}}
-								src={'https://leseditionsdeparis.com/api/Containers/images/download/'+book.media.src[1]}
-								alt="No image available"
-								/>
-						</GridTile>
-						))
+						this.state.books.filter(this.filterSearch).map( (book,id) =>
+							( 
+								<GridTile
+									key={id}
+									title={book.title + ' ' + book.authors[0].slug}
+									subtitle={
+										<Button
+											link={'/book/'+id}
+											message="View more"
+										/>
+									}>
+									<img
+										style={{width: '100%'}}
+										src={'https://leseditionsdeparis.com/api/Containers/images/download/'+book.media.src[1]}
+										alt="No image available"
+										/>
+								</GridTile>
+							))
 						:
 						<p>No books</p>
 					}
