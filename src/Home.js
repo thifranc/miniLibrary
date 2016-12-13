@@ -24,17 +24,12 @@ class Home extends Component {
 		})
 		.catch(err => console.log(err))
 	}
-	handleSearch() {
-		console.log('lol');
-		this.books.forEach(book => {
-		});
-	}
 	handleFillChar(e) {
 		this.setState({search: e.target.value});
 	}
 	handleKey(e) {
 		if (e.key === 'Enter') {
-			this.handleSearch();
+			this.props.handleSearch();
 		}
 	}
   render() {
@@ -49,14 +44,20 @@ class Home extends Component {
 				/>
 			<RaisedButton
 				label="Search !"
-				onClick={this.handleSearch}
+				onClick={this.props.handleSearch}
 				/>
 				<GridList cellHeight={'auto'} cols={5}>
 					{this.state.books.length > 0 ?
 						this.state.books.map( (book, id) => ( 
 						<GridTile
-							title={book.title}
-							subtitle={book.authors[0].slug}>
+							key={id}
+							title={book.title + ' ' + book.authors[0].slug}
+							subtitle={
+								<Button
+									link={'/book/'+id}
+									message="View more"
+								/>
+							}>
 							<img
 								style={{width: '100%'}}
 								src={'https://leseditionsdeparis.com/api/Containers/images/download/'+book.media.src[1]}

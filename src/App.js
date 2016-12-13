@@ -19,10 +19,16 @@ class App extends Component {
   render() {
     return (
 			<MuiThemeProvider muiTheme={muiTheme}>
-		<Router history={browserHistory}>
-			<Route path="/" component={Home}/>
-			<Route path="/book/:id" component={Book}/>
-		</Router>
+				<Router history={browserHistory}>
+					<Route
+						path="/"
+						component={Home}
+					/>
+					<Route
+						path="/book/:id"
+						component={Book}
+					/>
+				</Router>
 			</MuiThemeProvider>
     );
   }
