@@ -11,5 +11,6 @@ build
 
 # misc
 .DS_Store
+*.swp
 .env
 npm-debug.log
